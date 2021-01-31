@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 
-import User from './user';
-import Message from './message';
+import User from './user.model';
+import Message from './message.model';
 
 const connectDb = () => {
   if (process.env.DATABASE_URL) {

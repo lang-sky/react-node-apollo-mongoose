@@ -3,9 +3,11 @@ import cors from 'cors';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import http from 'http';
+import morgan from 'morgan';
 
 import schema from './schema';
 import resolvers from './resolvers';
+import context from './context';
 import { connectDb } from './models';
 
 const app = express();
@@ -18,16 +20,14 @@ const server = new ApolloServer({
   introspection: true,
   typeDefs: schema,
   resolvers,
+  context,
   formatError: (error) => {
-    // format error message here
+    // ! format error message here
     const message = error.message;
     return {
       ...error,
       message,
     };
-  },
-  context: async ({ req, connection }) => {
-    return {};
   },
 });
 

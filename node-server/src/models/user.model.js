@@ -6,15 +6,18 @@ import isEmail from 'validator/lib/isEmail';
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: [true, 'username already existing'],
+    unique: true,
     required: [true, 'username required'],
   },
   email: {
     type: String,
-    unique: [true, 'email already registered'],
+    unique: true,
     required: [true, 'email required'],
     validate: [isEmail, 'No valid email address provided'],
-    // todo: custom validate:
+    // validate: {
+    //   validator: (v) => isEmail(v),
+    //   message: (props) => `${props.value} is not a valid email`,
+    // },
   },
   password: {
     type: String,
@@ -30,9 +33,9 @@ const userSchema = new mongoose.Schema({
 
 userSchema.statics = {
   findByLogin: async function (login) {
-    let user = await this.findOne({ username: login });
+    let user = await this.findOne({ username: login }, '+password');
     if (!user) {
-      user = await this.findOne({ email: login });
+      user = await this.findOne({ email: login }, '+password');
     }
     return user;
   },
