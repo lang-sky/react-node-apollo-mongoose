@@ -39,7 +39,7 @@ const createMessage = combineResolvers(
       userId: me.id,
     });
 
-    // todo: pubsub
+    pubsub.publish(EVENTS.MESSAGE.CREATED, { messageCreated: { message } });
 
     return message;
   }
@@ -59,6 +59,10 @@ const getMessageOwner = async (message) => {
   return user;
 };
 
+const messageCreated = {
+  subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.CREATED),
+};
+
 export default {
   Query: {
     messages: getMessages,
@@ -68,4 +72,5 @@ export default {
   Message: {
     user: getMessageOwner,
   },
+  Subscription: { messageCreated },
 };
