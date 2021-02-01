@@ -49,8 +49,18 @@ const deleteMessage = combineResolvers(
   isAuthenticated,
   isMessageOwner,
   async (parent, { id }) => {
-    const message = await models.Message.findByIdAndDelete(id);
-    return !!message;
+    // ! this doesn't fire pre('remove')
+    // const message = await models.Message.findByIdAndDelete(id);
+    // return !!message;
+
+    const message = await models.Message.findById(id);
+
+    if (message) {
+      const res = await message.remove();
+      return !!res;
+    } else {
+      return false;
+    }
   }
 );
 

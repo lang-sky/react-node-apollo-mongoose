@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { combineResolvers } from 'graphql-resolvers';
 import { AuthenticationError, UserInputError } from 'apollo-server';
 
@@ -30,7 +31,7 @@ const signUp = async (parent, { username, email, password }) => {
     password,
   });
 
-  return { token: createToken(user) };
+  return createToken(user);
 };
 
 const signIn = async (parent, { login, password }) => {
@@ -46,7 +47,7 @@ const signIn = async (parent, { login, password }) => {
     throw new AuthenticationError('Invalid password');
   }
 
-  return { token: createToken(user) };
+  return createToken(user);
 };
 
 const updateUser = combineResolvers(
@@ -61,17 +62,18 @@ const updateUser = combineResolvers(
 );
 
 const deleteUser = combineResolvers(isAdmin, async (parent, { id }) => {
-  const user = await models.User.findByIdAndDelete(id);
-  return !!user;
+  // ! this doesn't fire pre('remove')
+  // const user = await models.User.findByIdAndDelete(id);
+  // return !!user;
 
-  // const user = await models.User.findById(id);
+  const user = await models.User.findById(id);
 
-  // if (user) {
-  //   await user.remove();
-  //   return true;
-  // } else {
-  //   return false;
-  // }
+  if (user) {
+    const res = await user.remove();
+    return !!res;
+  } else {
+    return false;
+  }
 });
 
 const getMessages = async (user) => {

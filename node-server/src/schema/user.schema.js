@@ -16,6 +16,8 @@ export default gql`
 
   type Token {
     token: String!
+    role: String
+    expiresIn: Int
   }
 
   type User {

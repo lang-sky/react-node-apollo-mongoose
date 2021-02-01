@@ -17,7 +17,7 @@ export const GET_MESSAGES = gql`
 `;
 
 export const GET_MESSAGE = gql`
-  query Message($id: String!) {
+  query Message($id: ID!) {
     message(id: $id) {
       id
       text
@@ -47,3 +47,14 @@ export const DELETE_MESSAGE = gql`
 `;
 
 // todo: subscription message created
+export const MESSAGES_SUBSCRIPTION = gql`
+  subscription MessageCreated {
+    messageCreated {
+      message {
+        id
+        text
+        createdAt
+      }
+    }
+  }
+`;
